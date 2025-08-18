@@ -20,9 +20,11 @@ public class AuthenticationService {
 
     public AuthResponse register(User request) {
         User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // Passwort verschlüsseln
-        user.setRole(Role.USER); // Standardrolle zuweisen
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
 
         userRepository.save(user);
 
@@ -31,16 +33,14 @@ public class AuthenticationService {
     }
 
     public AuthResponse authenticate(User request) {
-        // Spring Security authentifiziert den Benutzer
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
+                        request.getEmail(),
                         request.getPassword()
                 )
         );
 
-        // Wenn die Authentifizierung erfolgreich war, lade den Benutzer und generiere einen Token
-        User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         String token = jwtService.generateToken(user);
         return new AuthResponse(token);
     }

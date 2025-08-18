@@ -1,4 +1,4 @@
-package tracker.trackerback.model; // Or your preferred model package
+package tracker.trackerback.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,21 +13,23 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "app_user") // "user" is often a reserved keyword in SQL
+@Table(name = "app_user")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String firstName;
+    private String lastName;
+
     @Column(unique = true, nullable = false)
-    private String username;
+    private String email;
 
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -35,13 +37,13 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return email;
     }
 
     @Override
-    public String getUsername() {
-        return username;
+    public String getPassword() {
+        return password;
     }
 
     @Override
